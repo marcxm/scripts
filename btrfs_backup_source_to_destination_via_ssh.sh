@@ -26,8 +26,8 @@ if [ -z "$(ls -A $DESTINATION_DIR)" ]; then
    # make RO snap on SOURCE
    # rotate snapshots - current => last, previous last => original TIMESTAMP:
    # rename on stable Debian [SOURCE] requires sed syntax: 's/replace_this/with_this/' $filename
-   ssh $SSH_USER@$SOURCE_IP "rename 's/_last//' "$SOURCE_SNAP_DIR"/""*last"
-   ssh $SSH_USER@$SOURCE_IP "rename 's/current/last/' "$SOURCE_SNAP_DIR""/"*current"
+   ssh $SSH_USER@$SOURCE_IP "rename 's/_last//' "$SOURCE_SNAP_DIR""/"*last"
+   ssh $SSH_USER@$SOURCE_IP "rename 's/_current/_last/' "$SOURCE_SNAP_DIR""/"*current"
    # make read-only [required by btrfs send] snapshot on SOURCE
    ssh $SSH_USER@$SOURCE_IP "btrfs sub snap -r "$SOURCE_DIR" "$SOURCE_SNAP_DIR"/"$TIMESTAMP"_current"
    # send that snapshot to from SOURCE to DESTINATION
@@ -41,8 +41,8 @@ else
    rename '_last' '' "$DESTINATION_DIR"/*
    rename '_current' '_last' "$DESTINATION_DIR"/*
    # rename on stable Debian [SOURCE] requires sed syntax: 's/replace_this/with_this/' $filename
-   ssh $SSH_USER@$SOURCE_IP "rename 's/last//' "$SOURCE_SNAP_DIR""/"*last"
-   ssh $SSH_USER@$SOURCE_IP "rename 's/current/_last/' "$SOURCE_SNAP_DIR""/"*current"
+   ssh $SSH_USER@$SOURCE_IP "rename 's/_last//' "$SOURCE_SNAP_DIR""/"*last"
+   ssh $SSH_USER@$SOURCE_IP "rename 's/_current/_last/' "$SOURCE_SNAP_DIR""/"*current"
    # make incremental RO snap on SOURCE
    ssh $SSH_USER@$SOURCE_IP "btrfs sub snap -r "$SOURCE_DIR" "$SOURCE_SNAP_DIR"/"$TIMESTAMP"_current"
    # send that snapshot from SOURCE to DESTINATION
